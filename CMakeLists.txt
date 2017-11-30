@@ -35,3 +35,4 @@ include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
 find_package(Qt5LinguistTools REQUIRED)
 
 add_subdirectory(src)
+add_subdirectory(external/ode_num_int)
