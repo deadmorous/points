@@ -31,6 +31,7 @@ include_directories(${Qt5Widgets_INCLUDE_DIRS})
 include_directories(${Qt5Svg_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
+include_directories(external/ode_num_int/include)
 
 find_package(Qt5LinguistTools REQUIRED)
 
