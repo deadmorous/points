@@ -6,9 +6,12 @@
 #include <QWidget>
 #include <memory>
 
+class QTreeView;
+
 namespace ctm {
 
 class OptionalParameters;
+class ParamModel;
 
 class ParamView : public QWidget
 {
@@ -19,7 +22,8 @@ public:
     void setSource(std::shared_ptr<OptionalParameters> source);
 
 private:
-    std::shared_ptr<OptionalParameters> m_source;
+    ParamModel *m_model;
+    QTreeView *m_view;
 };
 
 } // namespace ctm
