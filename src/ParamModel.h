@@ -5,6 +5,7 @@
 
 #include <QAbstractItemModel>
 #include <memory>
+#include "IndexedComparable.h"
 
 namespace ctm {
 
@@ -34,6 +35,7 @@ public:
 
 private:
     std::shared_ptr<OptionalParameters> m_source;
+    IndexedComparable<quintptr, QString> m_paths;
 };
 
 } // namespace ctm
