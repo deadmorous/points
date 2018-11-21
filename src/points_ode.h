@@ -36,10 +36,24 @@ class PointsOdeRhs :
             }
 
         void rhs( V& dst, real_type time, const V& x ) const
-            {
-            ASSERT(false); // TODO
-            this->odeRhsPostObservers( time, x, dst, this );
+        {
+            auto _2n = m_n << 1;
+            dst.resize(_2n);
+            dst.clear();
+            for (int _2i=0; _2i<_2n; _2i+=2) {
+                auto _2inext = (_2i+2)%_2n;
+                auto dx = x[_2inext] - x[_2i];
+                auto dy = x[_2inext+1] - x[_2i+1];
+                auto idr = 1./sqrt(dx*dx+dy*dy);
+                dx *= idr;
+                dy *= idr;
+                dst[_2i] += dx;
+                dst[_2i+1] += dy;
+                dst[_2inext] -= dx;
+                dst[_2inext+1] -= dy;
             }
+            this->odeRhsPostObservers( time, x, dst, this );
+        }
 
         Parameters parameters() const
             {

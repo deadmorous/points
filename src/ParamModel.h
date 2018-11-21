@@ -29,13 +29,13 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     QVariant headerData(int section, Qt::Orientation orientation,
                                 int role = Qt::DisplayRole) const override;
-    QMap<int, QVariant> itemData(const QModelIndex &index) const override;
-    bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles) override;
+    // QMap<int, QVariant> itemData(const QModelIndex &index) const override;
+    // bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles) override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 private:
     std::shared_ptr<OptionalParameters> m_source;
-    IndexedComparable<quintptr, QString> m_paths;
+    mutable IndexedComparable<quintptr, QString> m_paths;
 };
 
 } // namespace ctm

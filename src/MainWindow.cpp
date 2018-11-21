@@ -2,6 +2,7 @@
 
 #include "MainWindow.h"
 #include "ParamView.h"
+#include "points_ode.h"
 
 #include <QDockWidget>
 #include <QLabel>
@@ -12,7 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     auto dock = new QDockWidget(tr("Parameters"), this);
-    dock->setWidget(new ParamView);
+    auto paramView = new ParamView;
+    paramView->setSource(std::make_shared<points::PointsOdeRhs>()); // TODO better
+    dock->setWidget(paramView);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
     setCentralWidget(new QLabel("hello"));
