@@ -2,10 +2,12 @@
 
 #include "MainWindow.h"
 #include "ParamView.h"
-#include "points_ode.h"
+#include "ParamModel.h"
+#include "TaskConfig.h"
 
 #include <QDockWidget>
 #include <QLabel>
+#include <QStatusBar>
 
 namespace ctm {
 
@@ -14,11 +16,19 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     auto dock = new QDockWidget(tr("Parameters"), this);
     auto paramView = new ParamView;
-    paramView->setSource(std::make_shared<points::PointsOdeRhs>()); // TODO better
+
+    const OptionalParameters* paramProvider = points::TaskConfig::cfg().parameterProvider();
+    paramView->setSource(const_cast<OptionalParameters*>(paramProvider));
     dock->setWidget(paramView);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
     setCentralWidget(new QLabel("hello"));
+
+    auto statusBar = new QStatusBar;
+    setStatusBar(statusBar);
+    connect(paramView->model(), &ParamModel::editingFailed, [statusBar](const QString msg) {
+        statusBar->showMessage(msg, 3000);
+    });
 }
 
 } // namespace ctm

@@ -18,8 +18,9 @@ class ParamView : public QWidget
 Q_OBJECT
 public:
     explicit ParamView(QWidget *parent = nullptr);
-    std::shared_ptr<OptionalParameters> source() const;
-    void setSource(std::shared_ptr<OptionalParameters> source);
+    OptionalParameters *source() const;
+    void setSource(OptionalParameters *source);
+    ParamModel *model();
 
 private:
     ParamModel *m_model;

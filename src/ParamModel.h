@@ -16,8 +16,8 @@ class ParamModel : public QAbstractItemModel
 Q_OBJECT
 public:
     explicit ParamModel(QObject *parent = nullptr);
-    std::shared_ptr<OptionalParameters> source() const;
-    void setSource(std::shared_ptr<OptionalParameters> source);
+    OptionalParameters *source() const;
+    void setSource(OptionalParameters *source);
 
     QModelIndex index(int row, int column,
                               const QModelIndex &parent = QModelIndex()) const override;
@@ -33,8 +33,11 @@ public:
     // bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles) override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
+signals:
+    void editingFailed(const QString& what);
+
 private:
-    std::shared_ptr<OptionalParameters> m_source;
+    OptionalParameters *m_source = nullptr;
     mutable IndexedComparable<quintptr, QString> m_paths;
 };
 

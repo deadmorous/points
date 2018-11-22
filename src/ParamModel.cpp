@@ -9,12 +9,12 @@ ParamModel::ParamModel(QObject *parent) : QAbstractItemModel(parent)
 {
 }
 
-std::shared_ptr<OptionalParameters> ParamModel::source() const
+OptionalParameters *ParamModel::source() const
 {
     return m_source;
 }
 
-void ParamModel::setSource(std::shared_ptr<OptionalParameters> source)
+void ParamModel::setSource(OptionalParameters *source)
 {
     m_source = source;
 }
@@ -22,6 +22,8 @@ void ParamModel::setSource(std::shared_ptr<OptionalParameters> source)
 QModelIndex ParamModel::index(int row, int column,
                           const QModelIndex &parent) const
 {
+    if (!m_source)
+        return createIndex(row, column);
     auto parentPath = parent.isValid()? m_paths.byIndex(parent.internalId()): QString();
     auto root = m_source->parameters();
     auto& param = OptionalParameters::parameters(root, parentPath.toUtf8().constData());
@@ -37,6 +39,8 @@ QModelIndex ParamModel::index(int row, int column,
 
 QModelIndex ParamModel::parent(const QModelIndex &child) const
 {
+    if (!m_source)
+        return QModelIndex();
     Q_ASSERT(child.isValid());
     auto path = m_paths.byIndex(child.internalId());
     auto i = path.lastIndexOf('.');
@@ -55,12 +59,14 @@ QModelIndex ParamModel::parent(const QModelIndex &child) const
 
 int ParamModel::rowCount(const QModelIndex &parent) const
 {
+    if (!m_source)
+        return 0;
     if (parent.isValid() && parent.column() != 0)
-        return false;
+        return 0;
     auto parentPath = parent.isValid()? m_paths.byIndex(parent.internalId()): QString();
     auto root = m_source->parameters();
     if (parentPath.isEmpty())
-        return root.size();
+        return static_cast<int>(root.size());
     auto& value = OptionalParameters::value(root, parentPath.toUtf8().constData());
     auto nestedParam = value.nestedParameters();
     return nestedParam? static_cast<int>(nestedParam->size()): 0;
@@ -68,6 +74,8 @@ int ParamModel::rowCount(const QModelIndex &parent) const
 
 int ParamModel::columnCount(const QModelIndex &parent) const
 {
+    if (!m_source)
+        return 0;
     return 2;
 }
 
@@ -81,24 +89,40 @@ QVariant ParamModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
     auto path = m_paths.byIndex(index.internalId());
-    switch (index.column()) {
-    case 0: {
-        auto i = path.lastIndexOf('.');
-        return i == -1? path: path.mid(i+1);
+    if (role == Qt::DisplayRole || role == Qt::EditRole) {
+        switch (index.column()) {
+        case 0: {
+            auto i = path.lastIndexOf('.');
+            return i == -1? path: path.mid(i+1);
+        }
+        case 1: {
+            auto root = m_source->parameters();
+            auto& value = OptionalParameters::value(root, path.toUtf8().constData());
+            return QString::fromUtf8(value.value<std::string>().c_str());
+        }
+        default:
+            Q_ASSERT(false);
+        }
     }
-    case 1: {
-        auto root = m_source->parameters();
-        auto& value = OptionalParameters::value(root, path.toUtf8().constData());
-        return QString::fromUtf8(value.value<std::string>().c_str());
-    }
-    default:
-        Q_ASSERT(false);
-    }
+    else
+        return QVariant();
 }
 
 bool ParamModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    return false; // TODO
+    Q_ASSERT(index.isValid());
+    auto root = m_source->parameters();
+    auto path = m_paths.byIndex(index.internalId());
+    auto& v = OptionalParameters::value(root, path.toUtf8().constData());
+    v = value.toString().toUtf8().constData();
+    try {
+        m_source->setParameters(root);
+        return true;
+    }
+    catch(const std::exception& e) {
+        emit editingFailed(QString::fromUtf8(e.what()));
+        return  false;
+    }
 }
 
 QVariant ParamModel::headerData(int section, Qt::Orientation orientation, int role) const
