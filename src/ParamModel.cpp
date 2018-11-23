@@ -108,15 +108,26 @@ QVariant ParamModel::data(const QModelIndex &index, int role) const
         return QVariant();
 }
 
-bool ParamModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool ParamModel::setData(const QModelIndex &idx, const QVariant &value, int role)
 {
-    Q_ASSERT(index.isValid());
+    Q_ASSERT(idx.isValid());
     auto root = m_source->parameters();
-    auto path = m_paths.byIndex(index.internalId());
+    auto path = m_paths.byIndex(idx.internalId());
     auto& v = OptionalParameters::value(root, path.toUtf8().constData());
+    auto hadNestedParameters = v.nestedParameters()? true: false;
     v = value.toString().toUtf8().constData();
     try {
+        auto parent = idx.parent();
+        auto row = idx.row();
         m_source->setParameters(root);
+        if (hadNestedParameters) {
+            beginRemoveRows(parent, row, row);
+            endRemoveRows();
+            beginInsertRows(parent, row, row);
+            endInsertRows();
+        }
+        else
+            emit dataChanged(index(row, 0, parent), index(row, 1, parent));
         return true;
     }
     catch(const std::exception& e) {
