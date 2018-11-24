@@ -4,6 +4,7 @@
 #include "ParamView.h"
 #include "ParamModel.h"
 #include "TaskConfig.h"
+#include "PointsView.h"
 
 #include <QDockWidget>
 #include <QLabel>
@@ -23,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dock->setWidget(paramView);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
-    setCentralWidget(new QLabel("hello"));
+    setCentralWidget(new points::PointsView);
 
     auto statusBar = new QStatusBar;
     setStatusBar(statusBar);
