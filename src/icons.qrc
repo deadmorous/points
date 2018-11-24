@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/points">
+        <file alias="play.svg">res/play.svg</file>
+        <file alias="stop.svg">res/stop.svg</file>
+    </qresource>
+</RCC>

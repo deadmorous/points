@@ -138,8 +138,7 @@ bool ParamModel::setData(const QModelIndex &idx, const QVariant &value, int role
             beginInsertRows(parent, row, row);
             endInsertRows();
         }
-        else
-            emit dataChanged(index(row, 0, parent), index(row, 1, parent));
+        emit dataChanged(index(row, 0, parent), index(row, 1, parent));
         return true;
     }
     catch(const std::exception& e) {

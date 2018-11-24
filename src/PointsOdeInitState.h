@@ -26,7 +26,13 @@ public:
 
 private:
     unsigned int m_size = 10;
-    double m_randomAmplitude = 0;
+    unsigned int m_x_periods = 1;
+    unsigned int m_y_periods = 1;
+    unsigned int m_param_periods = 10;
+    unsigned int m_wave_periods = 3;
+    double m_wave_amp = 0;
+    double m_param_amp = 0;
+    double m_xy_random_amp = 0;
 };
 
 } // namespace points

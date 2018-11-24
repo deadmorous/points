@@ -17,6 +17,7 @@ Q_OBJECT
 public:
     explicit PointsView(QWidget *parent = nullptr);
 
+public slots:
     void setData(const V& data);
     void resetView();
 
