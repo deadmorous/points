@@ -2,6 +2,8 @@
 
 #include "ParamModel.h"
 #include "ode_num_int/OptionalParameters.h"
+#include "ModelRoles.h"
+#include "decl_metatype.h"
 
 namespace ctm {
 
@@ -104,6 +106,16 @@ QVariant ParamModel::data(const QModelIndex &index, int role) const
             Q_ASSERT(false);
         }
     }
+    else if (role == ModelRoles::IsFactoryObject) {
+        auto root = m_source->parameters();
+        auto& value = OptionalParameters::value(root, path.toUtf8().constData());
+        return value.typeRegistryGetter()? true: false;
+    }
+    else if (role == ModelRoles::TypeRegistryGetter) {
+        auto root = m_source->parameters();
+        auto& value = OptionalParameters::value(root, path.toUtf8().constData());
+        return QVariant::fromValue(value.typeRegistryGetter());
+    }
     else
         return QVariant();
 }
@@ -151,16 +163,6 @@ QVariant ParamModel::headerData(int section, Qt::Orientation orientation, int ro
     }
     return QVariant();
 }
-
-//QMap<int, QVariant> ParamModel::itemData(const QModelIndex &index) const
-//{
-//    return QMap<int, QVariant>();
-//}
-
-//bool ParamModel::setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles)
-//{
-//    return false; // TODO
-//}
 
 Qt::ItemFlags ParamModel::flags(const QModelIndex &index) const
 {

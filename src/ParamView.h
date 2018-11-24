@@ -7,6 +7,7 @@
 #include <memory>
 
 class QTreeView;
+class QAbstractItemDelegate;
 
 namespace ctm {
 
@@ -25,6 +26,7 @@ public:
 private:
     ParamModel *m_model;
     QTreeView *m_view;
+    QAbstractItemDelegate *m_delegate;
 };
 
 } // namespace ctm

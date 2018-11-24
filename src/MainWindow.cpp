@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     auto dock = new QDockWidget(tr("Parameters"), this);
+    dock->setMinimumWidth(300);
     auto paramView = new ParamView;
 
     const OptionalParameters* paramProvider = points::TaskConfig::cfg().parameterProvider();

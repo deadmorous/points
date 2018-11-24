@@ -2,6 +2,8 @@
 
 #include "ParamView.h"
 #include "ParamModel.h"
+#include "ParamModelDelegate.h"
+
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QTreeView>
@@ -12,7 +14,8 @@ namespace ctm {
 ParamView::ParamView(QWidget *parent) :
     QWidget(parent),
     m_model(new ParamModel(this)),
-    m_view(new QTreeView)
+    m_view(new QTreeView),
+    m_delegate(new ParamModelDelegate)
 {
     setMinimumHeight(100);
     setMinimumWidth(100);
@@ -20,7 +23,9 @@ ParamView::ParamView(QWidget *parent) :
     auto layout = new QVBoxLayout(this);
     layout->addWidget(m_view);
     m_view->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-    m_view->header()->setMinimumSectionSize( 50 );
+    m_view->header()->setMinimumSectionSize( 70 );
+    m_view->setItemDelegateForColumn(1, m_delegate);
+    m_view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed);
 }
 
 OptionalParameters *ParamView::source() const
