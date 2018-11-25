@@ -18,14 +18,14 @@ public:
     explicit PointsView(QWidget *parent = nullptr);
 
 public slots:
-    void setData(const V& data);
+    void setState(double time, const V& state);
     void resetView();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
-    V m_data;
+    V m_state;
     QPointF m_sceneCenter;
     QSizeF m_sceneSize;
     bool m_hasTransformData;

@@ -3,6 +3,7 @@
 #include "PointsOdeInitState.h"
 #include "ode_num_int/util/m_const.h"
 
+namespace ctm {
 namespace points {
 
 CTM_FACTORY_REGISTER_TYPE( PointsOdeInitState, "points" )
@@ -65,3 +66,4 @@ void PointsOdeInitState::setParameters(const Parameters& parameters)
 }
 
 } // namespace points
+} // namespace ctm

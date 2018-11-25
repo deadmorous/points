@@ -4,18 +4,16 @@
 #define _POINTSODEINITSTATE_H_
 
 #include "ode_num_int/OdeInitState.h"
+#include "vec_type.h"
 
+namespace ctm {
 namespace points {
-using namespace ctm::math;
-
-using VD = ctm::math::VectorData<double>;
 
 class PointsOdeInitState :
-    public OdeInitState<VD>,
-    public ctm::FactoryMixin< PointsOdeInitState, OdeInitState<VD> >
+    public math::OdeInitState<VD>,
+    public ctm::FactoryMixin< PointsOdeInitState, math::OdeInitState<VD> >
 {
 public:
-    typedef ctm::math::Vector< double > V;
     typedef OptionalParameters::Parameters Parameters;
 
     double initialTime() const override;
@@ -36,5 +34,6 @@ private:
 };
 
 } // namespace points
+} // namespace ctm
 
 #endif // _POINTSODEINITSTATE_H_

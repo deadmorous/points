@@ -3,21 +3,21 @@
 #ifndef _TASKCONFIG_H_
 #define _TASKCONFIG_H_
 
-#include "points_ode.h"
 #include "ode_num_int/OdeSolverConfiguration.h"
+#include "vec_type.h"
 
-namespace points {
+namespace ctm {
 
 class TaskConfig
 {
 public:
-    static OdeSolverConfiguration<VD>& cfg();
+    static math::OdeSolverConfiguration<VD>& cfg();
 
 private:
     static bool m_initialized;
-    static OdeSolverConfiguration<VD> m_cfg;
+    static math::OdeSolverConfiguration<VD> m_cfg;
 };
 
-} // namespace points
+} // namespace ctm
 
 #endif // _TASKCONFIG_H_

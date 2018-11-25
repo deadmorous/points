@@ -4,19 +4,17 @@
 #define _POINTS_ODE_H_
 
 #include "ode_num_int/OdeRhs.h"
+#include "vec_type.h"
+
+namespace ctm {
 
 namespace points {
-using namespace ctm::math;
-
-using VD = ctm::math::VectorData<double>;
 
 class PointsOdeRhs :
-    public OdeRhs< VD >,
-    public ctm::FactoryMixin< PointsOdeRhs, OdeRhs<VD> >
+    public math::OdeRhs< VD >,
+    public ctm::FactoryMixin< PointsOdeRhs, math::OdeRhs<VD> >
     {
     public:
-        typedef ctm::math::Vector< double > V;
-        typedef V::value_type real_type;
         typedef OptionalParameters::Parameters Parameters;
 
         explicit PointsOdeRhs() :
@@ -49,8 +47,8 @@ class PointsOdeRhs :
                 dy *= idr;
                 dst[_2i] += dx;
                 dst[_2i+1] += dy;
-                dst[_2inext] -= dx;
-                dst[_2inext+1] -= dy;
+                dst[_2inext] += dx;
+                dst[_2inext+1] += dy;
             }
             this->odeRhsPostObservers( time, x, dst, this );
         }
@@ -83,5 +81,7 @@ class PointsOdeRhs :
     };
 
 } // namespace points
+
+} // namespace ctm
 
 #endif // _POINTS_ODE_H_

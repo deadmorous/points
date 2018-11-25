@@ -1,12 +1,12 @@
 // TaskConfig.cpp
 
 #include "TaskConfig.h"
-namespace points {
+namespace ctm {
 
 bool TaskConfig::m_initialized = false;
-OdeSolverConfiguration<VD> TaskConfig::m_cfg;
+math::OdeSolverConfiguration<VD> TaskConfig::m_cfg;
 
-OdeSolverConfiguration<VD>& TaskConfig::cfg()
+math::OdeSolverConfiguration<VD>& TaskConfig::cfg()
 {
     if (!m_initialized) {
         m_initialized = true;
@@ -22,4 +22,4 @@ OdeSolverConfiguration<VD>& TaskConfig::cfg()
 //    auto sc = cfg.apply( set<unsigned int>(), 0, x0 );
 //    solveOde( &cfg, &sc );
 
-} // namespace points
+} // namespace ctm

@@ -16,9 +16,10 @@ PointsView::PointsView(QWidget *parent) :
     setMinimumSize(400, 400);
 }
 
-void PointsView::setData(const V& data)
+void PointsView::setState(double time, const V& state)
 {
-    m_data = data;
+    Q_UNUSED(time); // TODO
+    m_state = state;
     fit();
     update();
 }
@@ -34,9 +35,9 @@ void PointsView::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter p(this);
-    if (m_data.empty())
+    if (m_state.empty())
         p.drawText(rect(), Qt::AlignCenter, "No point configuration has been set");
-    else if (m_data.size() & 1)
+    else if (m_state.size() & 1)
         p.drawText(rect(), Qt::AlignCenter, "Incorrect data size");
     else {
         p.setRenderHint(QPainter::Antialiasing);
@@ -52,21 +53,21 @@ void PointsView::paintEvent(QPaintEvent *event)
         transform.scale(sc, -sc);
         transform.translate(-m_sceneCenter.x(), -m_sceneCenter.y());
         p.setTransform(transform);
-        auto _2n = m_data.size();
+        auto _2n = m_state.size();
         auto pointRadius = 3*pixelSize;
         for(unsigned int _2i=0; _2i<_2n; _2i+=2)
         {
-            p.drawEllipse(QPointF(m_data[_2i], m_data[_2i+1]), pointRadius, pointRadius);
+            p.drawEllipse(QPointF(m_state[_2i], m_state[_2i+1]), pointRadius, pointRadius);
         }
     }
 }
 
 void PointsView::fit()
 {
-    auto _2n = m_data.size();
+    auto _2n = m_state.size();
     if (_2n < 2   ||   (_2n & 1))
         return;
-    auto xmin = m_data[0], xmax = xmin, ymin = m_data[1], ymax = ymin;
+    auto xmin = m_state[0], xmax = xmin, ymin = m_state[1], ymax = ymin;
     auto addPoint = [&](double x, double y) {
         if (xmin > x)
             xmin = x;
@@ -78,7 +79,7 @@ void PointsView::fit()
             ymax = y;
     };
     for(unsigned int _2i=2; _2i<_2n; _2i+=2)
-        addPoint(m_data[_2i], m_data[_2i+1]);
+        addPoint(m_state[_2i], m_state[_2i+1]);
     if (m_hasTransformData) {
         addPoint(m_sceneCenter.x() - 0.5*m_sceneSize.width(), m_sceneCenter.y() - 0.5*m_sceneSize.height());
         addPoint(m_sceneCenter.x() + 0.5*m_sceneSize.width(), m_sceneCenter.y() + 0.5*m_sceneSize.height());
