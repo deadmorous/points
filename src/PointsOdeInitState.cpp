@@ -15,9 +15,9 @@ double PointsOdeInitState::initialTime() const
 
 auto PointsOdeInitState::initialState() const -> V
 {
-    auto _2n = 2*m_size;
-    V result(2*m_size);
-    double h = 2*M_PI / m_size;
+    auto _2n = 2*m_pointCount;
+    V result(2*m_pointCount);
+    double h = 2*M_PI / m_pointCount;
     double t = 0;
     auto rnd = []() {
         return static_cast<double>(rand())/RAND_MAX;
@@ -27,7 +27,7 @@ auto PointsOdeInitState::initialState() const -> V
         auto r = 1 + m_wave_amp*sin(t*m_wave_periods);
         auto x = r*cos(angle*m_x_periods);
         auto y = r*sin(angle*m_y_periods);
-        if (m_xy_random_amp != 0) {
+        if (m_xy_random_amp > 0) {
             x += m_xy_random_amp*rnd();
             y += m_xy_random_amp*rnd();
         }
@@ -40,7 +40,7 @@ auto PointsOdeInitState::initialState() const -> V
 auto PointsOdeInitState::parameters() const -> Parameters
 {
     Parameters result;
-    result["size"] = m_size;
+    result["point_count"] = m_pointCount;
     result["x_periods"] = m_x_periods;
     result["y_periods"] = m_y_periods;
     result["param_periods"] = m_param_periods;
@@ -55,7 +55,7 @@ void PointsOdeInitState::setParameters(const Parameters& parameters)
 {
     using namespace std;
     using namespace placeholders;
-    OptionalParameters::maybeLoadParameter(parameters, "size", m_size);
+    OptionalParameters::maybeLoadParameter(parameters, "point_count", m_pointCount);
     OptionalParameters::maybeLoadParameter(parameters, "x_periods", m_x_periods);
     OptionalParameters::maybeLoadParameter(parameters, "y_periods", m_y_periods);
     OptionalParameters::maybeLoadParameter(parameters, "param_periods", m_param_periods);

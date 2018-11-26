@@ -29,6 +29,8 @@ private:
     QPointF m_sceneCenter;
     QSizeF m_sceneSize;
     bool m_hasTransformData;
+    bool m_drawGrid = true;
+    bool m_colorPoints = true;
 
     QPointF m_userOffset;
     double m_userScale;

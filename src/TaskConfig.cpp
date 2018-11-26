@@ -11,6 +11,7 @@ math::OdeSolverConfiguration<VD>& TaskConfig::cfg()
     if (!m_initialized) {
         m_initialized = true;
         m_cfg.setValue("rhs", "points");
+        m_cfg.setValue("init_state", "points");
         m_cfg.setValue("output_con", "con_solution");
         m_cfg.setValue("time", 10);
     }

@@ -40,9 +40,6 @@ void PointsView::paintEvent(QPaintEvent *event)
     else if (m_state.size() & 1)
         p.drawText(rect(), Qt::AlignCenter, "Incorrect data size");
     else {
-        p.setRenderHint(QPainter::Antialiasing);
-        p.setBrush(Qt::black);
-        p.setPen(Qt::NoPen);
         p.fillRect(rect(), Qt::white);
         QTransform transform;
         auto sc = m_sceneSize.width()*height() < m_sceneSize.height()*width()?
@@ -53,10 +50,42 @@ void PointsView::paintEvent(QPaintEvent *event)
         transform.scale(sc, -sc);
         transform.translate(-m_sceneCenter.x(), -m_sceneCenter.y());
         p.setTransform(transform);
+        if (m_drawGrid) {
+            auto itransform = transform.inverted();
+            auto toQPointF = [](const QPoint& p) {
+                return QPointF(p.x(), p.y());
+            };
+            auto p1 = itransform.map(toQPointF(rect().bottomLeft()));
+            auto p2 = itransform.map(toQPointF(rect().topRight()));
+            QPen pen(QColor(QRgb(0xdddddd)), 1);
+            pen.setCosmetic(true);
+            p.setPen(pen);
+            auto drawVline = [&](double x) {
+                p.drawLine(QPointF(x, p1.y()), QPointF(x, p2.y()));
+            };
+            auto drawHline = [&](double y) {
+                p.drawLine(QPointF(p1.x(), y), QPointF(p2.x(), y));
+            };
+            auto size = std::max(p2.x()-p1.x(), p2.y()-p1.y());
+            auto h = pow(10, floor(log10(size))-1);
+            auto x1 = ceil(p1.x()/h)*h;
+            auto x2 = floor(p2.x()/h)*(h+0.1);
+            for (auto x=x1; x<x2; x+=h)
+                drawVline(x);
+            auto y1 = ceil(p1.y()/h)*h;
+            auto y2 = floor(p2.y()/h)*(h+0.1);
+            for (auto y=y1; y<y2; y+=h)
+                drawHline(y);
+        }
         auto _2n = m_state.size();
         auto pointRadius = 3*pixelSize;
+        p.setBrush(Qt::black);
+        p.setPen(Qt::NoPen);
+        p.setRenderHint(QPainter::Antialiasing);
         for(unsigned int _2i=0; _2i<_2n; _2i+=2)
         {
+            if (m_colorPoints)
+                p.setBrush(QColor::fromHsvF(static_cast<double>(_2i)/_2n, 1, 0.7));
             p.drawEllipse(QPointF(m_state[_2i], m_state[_2i+1]), pointRadius, pointRadius);
         }
     }

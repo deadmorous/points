@@ -23,7 +23,7 @@ public:
     void setParameters(const Parameters& parameters) override;
 
 private:
-    unsigned int m_size = 10;
+    unsigned int m_pointCount = 10;
     unsigned int m_x_periods = 1;
     unsigned int m_y_periods = 1;
     unsigned int m_param_periods = 10;

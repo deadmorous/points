@@ -47,11 +47,15 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     // Update points view when the initial state changes
-    connect(m_paramView->model(), &ParamModel::dataChanged, [paramProvider, pointsView](const QModelIndex &index) {
+    auto updateInitState = [paramProvider, pointsView]() {
+        auto initState = paramProvider->initState();
+        pointsView->setState(0, initState? initState->initialState(): points::V());
+    };
+    updateInitState();
+    connect(m_paramView->model(), &ParamModel::dataChanged, [updateInitState](const QModelIndex &index) {
         for (auto i=index.siblingAtColumn(0); i.isValid(); i=i.parent())
             if (i.data().toString() == "init_state") {
-                auto initState = paramProvider->initState();
-                pointsView->setState(0, initState? initState->initialState(): points::V());
+                updateInitState();
                 return;
             }
     });
